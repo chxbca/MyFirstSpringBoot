@@ -9,11 +9,11 @@ public interface IUserService {
 
     List<User> getAllUser();
 
-    void register(String username, String password);
+    User register(String username, String password);
 
     void delete(String username, String password);
 
     void delete(Integer id);
 
-    void update(String username, String password, String newPassword);
+    User update(String username, String password, String newPassword);
 }

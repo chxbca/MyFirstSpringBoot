@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>注册</title>
+    <title>更新</title>
     <link rel="stylesheet" type="text/css" th:href="@{css/styles.css}">
 </head>
 
@@ -12,12 +12,12 @@
 <div>
     <div class="wrapper">
         <div class="container">
-            <h1>register</h1>
-            <form th:action="@{/user/register}" method="post">
+            <h1>update</h1>
+            <form th:action="@{/user/update}" method="post">
                 <input type="text" name="un" placeholder="Username">
                 <input type="password" name="pwd" placeholder="Password">
-                <input type="password" name="repwd" placeholder="RePassword">
-                <button type="submit">register</button>
+                <input type="password" name="npwd" placeholder="newPassword">
+                <button type="submit">Update</button>
             </form>
         </div>
 

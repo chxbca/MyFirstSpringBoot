@@ -29,9 +29,9 @@ public class UserService implements IUserService {
         return userDao.findAll();
     }
 
-    public void register(String username, String password) {
+    public User register(String username, String password) {
         User user = new User(username, password);
-        userDao.save(user);
+        return userDao.save(user);
     }
 
     @Override
@@ -47,9 +47,9 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void update(String username, String password, String newPassword) {
+    public User update(String username, String password, String newPassword) {
         User user = login(username, password).get(0);
         user.setPassword(newPassword);
-        userDao.save(user);
+        return userDao.save(user);
     }
 }

@@ -30,6 +30,22 @@ public class IndexController {
         return null;
     }
 
+    @RequestMapping(path = "/register")
+    public Object register() {
+        return null;
+    }
+
+    @RequestMapping(path = "/delete")
+    public Object delete() {
+        return null;
+    }
+
+
+    @RequestMapping(path = "/update")
+    public Object update() {
+        return null;
+    }
+
     @RequestMapping(path = "/user/allUser")
     public Object allUser(Model model) {
         List<User> list = userService.getAllUser();
