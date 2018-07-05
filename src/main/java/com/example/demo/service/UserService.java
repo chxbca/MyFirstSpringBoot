@@ -12,39 +12,44 @@ import java.util.List;
 public class UserService implements IUserService {
 
     private final
-    IUserDao iUserDao;
+    IUserDao userDao;
 
     @Autowired
-    public UserService(IUserDao iUserDao) {
-        this.iUserDao = iUserDao;
+    public UserService(IUserDao userDao) {
+        this.userDao = userDao;
     }
 
     @Override
     public List<User> login(String username, String password) {
-        return iUserDao.findAllByUsernameAndPassword(username, password);
+        return userDao.findAllByUsernameAndPassword(username, password);
+    }
+
+    @Override
+    public List<User> getAllUser() {
+        return userDao.findAll();
     }
 
     public void register(String username, String password) {
         User user = new User(username, password);
-        iUserDao.save(user);
+        userDao.save(user);
     }
 
     @Override
     public void delete(String username, String password) {
         User user = login(username, password).get(0);
-        iUserDao.delete(user);
+        userDao.delete(user);
     }
 
     @Override
     public void delete(Integer id) {
-        User user = iUserDao.findAllById(id);
-        iUserDao.delete(user);
+        User user = userDao.findAllById(id);
+        userDao.delete(user);
     }
 
     @Override
     public void update(String username, String password, String newPassword) {
         User user = login(username, password).get(0);
         user.setPassword(newPassword);
-        iUserDao.save(user);
+        userDao.save(user);
     }
 }

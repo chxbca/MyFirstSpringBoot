@@ -3,9 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.model.User;
 import com.example.demo.service.implement.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -18,19 +16,25 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping(path = "/login")
-    public User login(@RequestParam("un") String username,
-                      @RequestParam("pwd") String password) {
-        return userService.login(username, password).get(0);
+    @RequestMapping(method = RequestMethod.POST, path = "/user/userpage")
+    public String login(User user) {
+        String username = user.getUsername();
+        String password = user.getPassword();
+        int size = userService.login(username, password).size();
+        if (size == 0) {
+            return "登陆失败";
+        } else {
+            return "登陆成功";
+        }
     }
 
-    @GetMapping(path = "/register")
+    @RequestMapping(method = RequestMethod.POST, path = "/user/register")
     public void register(@RequestParam("un") String username,
                          @RequestParam("pwd") String password) {
         userService.register(username, password);
     }
 
-    @GetMapping(path = "/delete")
+    @RequestMapping(method = RequestMethod.GET, path = "/user/delete")
     public void delete(@RequestParam("un") String username,
                        @RequestParam("pwd") String password,
                        @RequestParam("id") Integer id) {
@@ -41,10 +45,10 @@ public class UserController {
         }
     }
 
-    @GetMapping(path = "/update")
+    @RequestMapping(method = RequestMethod.GET, path = "/user/update")
     public void update(@RequestParam("un") String username,
                        @RequestParam("pwd") String password,
-                       @RequestParam("npwd") String newPassword){
+                       @RequestParam("npwd") String newPassword) {
         userService.update(username, password, newPassword);
     }
 }

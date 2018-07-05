@@ -7,6 +7,8 @@ import java.util.List;
 public interface IUserService {
     List<User> login(String username, String password);
 
+    List<User> getAllUser();
+
     void register(String username, String password);
 
     void delete(String username, String password);
