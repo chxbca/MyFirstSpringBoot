@@ -1,9 +1,19 @@
 package com.example.demo.controller;
 
+import com.example.demo.WebSecurityConfig;
 import com.example.demo.model.User;
 import com.example.demo.service.implement.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class UserController {
@@ -16,40 +26,66 @@ public class UserController {
         this.userService = userService;
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/user/login")
-    public Object login(User user) {
+    @PostMapping("/loginPost")
+    public Map<String, Object> loginPost(User user, HttpSession session, HttpServletResponse response) throws IOException {
+//        System.out.println("MainController.loginPost");
         String username = user.getUsername();
         String password = user.getPassword();
         int size = userService.login(username, password).size();
+        Map<String, Object> map = new HashMap<>();
         if (size == 0) {
-            return "登陆失败";
-        } else {
-            return userService.login(username, password).get(0);
+            map.put("success", false);
+            map.put("message", "密码错误");
+            return map;
         }
+
+        // 设置session
+        session.setAttribute(WebSecurityConfig.SESSION_KEY, username);
+
+        map.put("success", true);
+        map.put("message", "登录成功");
+        String url = "/";
+        response.sendRedirect(url);
+        return map;
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/user/register")
-    public User register(@RequestParam("un") String username,
-                         @RequestParam("pwd") String password) {
+    @PostMapping(path = "/user/register")
+    public User register(@Valid User user, @RequestParam("repassword") String rePassword, HttpServletResponse response) throws IOException {
+        String username = user.getUsername();
+        String password = user.getPassword();
+        String url = "/";
+        response.sendRedirect(url);
         return userService.register(username, password);
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/user/delete")
-    public String delete(@RequestParam("un") String username,
-                         @RequestParam("pwd") String password,
-                         @RequestParam("id") Integer id) {
+    @PostMapping(path = "/user/delete")
+    public String delete(@Valid User user, HttpServletResponse response) throws IOException {
+        Integer id = user.getId();
+        String username = user.getUsername();
+        String password = user.getPassword();
         if (id == null) {
             userService.delete(username, password);
         } else {
             userService.delete(id);
         }
+        String url = "/";
+        response.sendRedirect(url);
         return "删除成功";
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/user/update")
-    public User update(@RequestParam("un") String username,
-                       @RequestParam("pwd") String password,
-                       @RequestParam("npwd") String newPassword) {
+    @PostMapping(path = "/user/update")
+    public User update(@Valid User user, @RequestParam("newpassword") String newPassword, HttpServletResponse response) throws IOException {
+        String username = user.getUsername();
+        String password = user.getPassword();
+        String url = "/";
+        response.sendRedirect(url);
         return userService.update(username, password, newPassword);
+    }
+
+    @GetMapping("/error")
+    public ModelAndView systemError(@ModelAttribute("error") String error) {
+        ModelAndView modelAndView = new ModelAndView("error");
+        modelAndView.addObject("error", error);
+        return modelAndView;
     }
 }

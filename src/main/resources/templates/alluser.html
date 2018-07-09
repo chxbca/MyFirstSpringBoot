@@ -1,0 +1,46 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+        table tr td, th {
+            border: 1px solid #5bc0de;
+        }
+    </style>
+    <title>user list</title>
+    <link rel="stylesheet" type="text/css" th:href="@{css/styles.css}">
+</head>
+
+<body>
+<div>
+    <div class="wrapper">
+        <div class="container">
+            <h1>ALL USER</h1>
+            <h3 th:text="'登录用户：' + ${name}"></h3>
+            <table border="1" cellpadding="3" cellspacing="0" style="width: 80%;margin:auto">
+                <tr>
+                    <th>username</th>
+                    <th>password</th>
+                </tr>
+                <tbody>
+                <tr th:each="user:${user}">
+                    <td th:text="${user.username}">hello</td>
+                    <td th:text="${user.password}">world</td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="btn">
+                <a href="/delete">删除用户</a>
+                <a href="/register">注册用户</a>
+                <a href="/update">更新用户</a>
+                <a href="/logout">注销</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

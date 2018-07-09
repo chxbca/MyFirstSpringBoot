@@ -12,31 +12,40 @@
 <div>
     <div class="wrapper">
         <div class="container">
-            <h1>register</h1>
+            <h1>REGISTER</h1>
             <form th:action="@{/user/register}" method="post">
-                <input type="text" name="un" placeholder="Username">
-                <input type="password" name="pwd" placeholder="Password">
-                <input type="password" name="repwd" placeholder="RePassword">
-                <button type="submit">Register</button>
+                <input type="text" name="username" placeholder="Username">
+                <input type="password" name="password" placeholder="Password" class="t" onchange="checkName(this);">
+                <input type="password" name="repassword" placeholder="RePassword" class="t" onchange="checkName(this);">
+                <button type="submit">REGISTER</button>
             </form>
         </div>
-
-        <ul class="bg-bubbles">
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-        </ul>
     </div>
 </div>
+<script th:src="@{jquery-3.1.1.min.js}" type="text/javascript"></script>
+<script type="text/javascript">
+    function checkName(data) {
+        var values = "";
+        $(".t").each(function (i, item) {
+            values += $(this).val(); //获取所有的名称
+        });
+        var val = $(data).val(); //获得当前输入框的值
+        var newValue = values.replace(val, ""); //去除当前输入框的值
+        if (newValue === "") {
+            return false;
+        } else {
+            if (val.length !== newValue.length) {
+                alert("两次密码不同");
+                return
+            }
 
-<!--<script th:src="@{~/jquery-3.1.1.min.js}" type="text/javascript"></script>-->
+            if (newValue.indexOf(val) > -1) { //当前值和newValue作比较
+            } else {
+                alert("两次密码不同");
+            }
+        }
+    }
+</script>
 </body>
 
 </html>
