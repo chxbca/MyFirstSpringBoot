@@ -4,82 +4,130 @@ import com.example.demo.WebSecurityConfig;
 import com.example.demo.model.User;
 import com.example.demo.service.implement.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-@RestController
+@Controller
 public class UserController {
 
-    private final
-    IUserService userService;
-
     @Autowired
-    public UserController(IUserService userService) {
-        this.userService = userService;
+    private IUserService userService;
+
+    @GetMapping(path = "/login")
+    public Object login(ModelAndView modelAndView, HttpSession session) {
+        if (session.getAttribute(WebSecurityConfig.SESSION_KEY) != null) {
+            return "redirect:/";
+        } else {
+            modelAndView.setViewName("login");
+        }
+        return modelAndView;
     }
 
-    @PostMapping("/loginPost")
-    public Map<String, Object> loginPost(User user, HttpSession session, HttpServletResponse response) throws IOException {
-//        System.out.println("MainController.loginPost");
+    @PostMapping("/login")
+    @ResponseBody
+    public Object login(User user, HttpSession session, HttpServletResponse response) throws IOException {
         String username = user.getUsername();
         String password = user.getPassword();
         int size = userService.login(username, password).size();
-        Map<String, Object> map = new HashMap<>();
+        String url = "/login";
         if (size == 0) {
-            map.put("success", false);
-            map.put("message", "密码错误");
-            return map;
+            response.sendRedirect(url);
+        } else {
+            session.setAttribute(WebSecurityConfig.SESSION_KEY, username);
+            url = "/";
+            response.sendRedirect(url);
         }
-
-        // 设置session
-        session.setAttribute(WebSecurityConfig.SESSION_KEY, username);
-
-        map.put("success", true);
-        map.put("message", "登录成功");
-        String url = "/";
-        response.sendRedirect(url);
-        return map;
+        return null;
     }
 
-    @PostMapping(path = "/user/register")
-    public User register(@Valid User user, @RequestParam("repassword") String rePassword, HttpServletResponse response) throws IOException {
+    @GetMapping(path = "/alluser")
+    public Object allUser(Model model) {
+        List<User> list = userService.getAllUser();
+        model.addAttribute("user", list);
+        return model;
+    }
+
+    @GetMapping(path = "/register")
+    public Object register(ModelAndView modelAndView) {
+        modelAndView.setViewName("register");
+        return modelAndView;
+    }
+
+    @PostMapping(path = "/register")
+    @ResponseBody
+    public Object register(@Valid User user, @RequestParam("repassword") String rePassword, HttpServletResponse response) throws IOException {
         String username = user.getUsername();
         String password = user.getPassword();
-        String url = "/";
+        int size = userService.getAllUserByUsername(username).size();
+        String url;
+
+        if (!password.equals(rePassword) || size != 0) {
+            url = "/register";
+            response.sendRedirect(url);
+            return null;
+        }
+        url = "/";
         response.sendRedirect(url);
         return userService.register(username, password);
     }
 
-    @PostMapping(path = "/user/delete")
-    public String delete(@Valid User user, HttpServletResponse response) throws IOException {
-        Integer id = user.getId();
+    @GetMapping(path = "/delete")
+    public Object delete(ModelAndView modelAndView) {
+        modelAndView.setViewName("delete");
+        return modelAndView;
+    }
+
+    @PostMapping(path = "/delete")
+    @ResponseBody
+    public Object delete(@Valid User user, HttpServletResponse response) throws IOException {
         String username = user.getUsername();
         String password = user.getPassword();
-        if (id == null) {
-            userService.delete(username, password);
-        } else {
-            userService.delete(id);
-        }
+        userService.delete(username, password);
         String url = "/";
         response.sendRedirect(url);
+        System.out.println("删除成功");
         return "删除成功";
     }
 
-    @PostMapping(path = "/user/update")
-    public User update(@Valid User user, @RequestParam("newpassword") String newPassword, HttpServletResponse response) throws IOException {
+
+    @GetMapping(path = "/update")
+    public Object update(ModelAndView modelAndView) {
+        modelAndView.setViewName("update");
+        return modelAndView;
+    }
+
+    @PostMapping(path = "/update")
+    @ResponseBody
+    public Object update(@Valid User user, @RequestParam("newpassword") String newPassword, HttpServletResponse response) throws IOException {
         String username = user.getUsername();
         String password = user.getPassword();
         String url = "/";
         response.sendRedirect(url);
         return userService.update(username, password, newPassword);
+    }
+
+    @GetMapping(path = "/")
+    public Object index(@SessionAttribute(WebSecurityConfig.SESSION_KEY) String username, Model model) {
+        List<User> list = userService.getAllUser();
+        model.addAttribute("user", list);
+        model.addAttribute("name", username);
+        return "alluser";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute(WebSecurityConfig.SESSION_KEY);
+        return "redirect:/login";
     }
 
     @GetMapping("/error")

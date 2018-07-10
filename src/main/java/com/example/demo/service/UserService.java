@@ -25,6 +25,11 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public List<User> getAllUserByUsername(String username) {
+        return userDao.findAllByUsername(username);
+    }
+
+    @Override
     public List<User> getAllUser() {
         return userDao.findAll();
     }

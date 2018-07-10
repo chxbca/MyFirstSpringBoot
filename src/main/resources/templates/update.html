@@ -13,7 +13,7 @@
     <div class="wrapper">
         <div class="container">
             <h1>UPDATE</h1>
-            <form th:action="@{/user/update}" method="post">
+            <form th:action="@{/update}" method="post">
                 <input type="text" name="username" placeholder="Username">
                 <input type="password" name="password" placeholder="Password" class="t" onchange="checkName(this);">
                 <input type="password" name="newpassword" placeholder="NewPassword" class="t"
@@ -23,7 +23,7 @@
         </div>
     </div>
 </div>
-<script th:src="@{jquery-3.1.1.min.js}" type="text/javascript"></script>
+<script src="webjars/jquery/3.1.1/jquery.min.js" type="text/javascript"></script>
 <script type="text/javascript">
     function checkName(data) {
         var values = "";
