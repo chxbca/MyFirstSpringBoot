@@ -13,9 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class UserController {
@@ -47,7 +45,7 @@ public class UserController {
             url = "/";
             response.sendRedirect(url);
         }
-        return null;
+        return userService.login(username, password).get(0);
     }
 
     @GetMapping(path = "/alluser")
